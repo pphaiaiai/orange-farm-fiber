@@ -11,10 +11,13 @@ import (
 	"gorm.io/gorm"
 )
 
+type Role string
+
 type User struct {
 	gorm.Model
 	Email    string `json:"email" gorm:"unique" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
+	Role     Role   `json:"role"`
 }
 
 func CreateUser(db *gorm.DB, c *fiber.Ctx) error {
@@ -28,6 +31,7 @@ func CreateUser(db *gorm.DB, c *fiber.Ctx) error {
 		return c.Status(500).SendString(err.Error())
 	}
 	user.Password = string(hashedPassword)
+	user.Role = "USER"
 
 	result := db.Create(user)
 	if result.Error != nil {
@@ -62,6 +66,7 @@ func Login(db *gorm.DB, c *fiber.Ctx) error {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["user_id"] = user.ID
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+	claims["role"] = user.Role
 
 	jwtSecretKey := os.Getenv("SECERT_KEY")
 	t, err := token.SignedString([]byte(jwtSecretKey))

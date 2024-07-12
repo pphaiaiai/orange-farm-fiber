@@ -58,7 +58,7 @@ func main() {
 	app := fiber.New()
 
 	// Middleware
-	app.Use("/variety", authRequired)
+	app.Use("/variety", adminRequired)
 	app.Use("/user", authRequired)
 	app.Use("/farm", authRequired)
 	app.Use("/orange", authRequired)
