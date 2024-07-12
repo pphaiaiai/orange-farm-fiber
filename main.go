@@ -52,7 +52,7 @@ func main() {
 	}
 
 	// Migrate the schema
-	db.AutoMigrate(&Variety{}, &User{}, &Farm{})
+	db.AutoMigrate(&Variety{}, &User{}, &Farm{}, &Orange{})
 
 	// Setup Fiber
 	app := fiber.New()
@@ -61,11 +61,13 @@ func main() {
 	app.Use("/variety", authRequired)
 	app.Use("/user", authRequired)
 	app.Use("/farm", authRequired)
+	app.Use("/orange", authRequired)
 
 	// Routes
 	AuthRoute(app, db)
 	VarietyRoute(app, db)
 	FarmRoute(app, db)
+	OrangeRoute(app, db)
 
 	// Start server
 	log.Fatal(app.Listen(":8080"))
