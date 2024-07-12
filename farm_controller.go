@@ -15,9 +15,9 @@ func FarmRoute(app *fiber.App, db *gorm.DB) {
 		return GetFarms(db, c)
 	})
 
-	app.Get("/farm/:id", func(c *fiber.Ctx) error {
-		return GetFarm(db, c)
-	})
+	// app.Get("/farm/:id", func(c *fiber.Ctx) error {
+	// 	return GetFarm(db, c)
+	// })
 
 	app.Put("/farm/:id", func(c *fiber.Ctx) error {
 		return UpdateFarm(db, c)

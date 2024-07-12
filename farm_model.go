@@ -38,19 +38,24 @@ func CreateFarm(db *gorm.DB, c *fiber.Ctx) error {
 }
 
 func GetFarms(db *gorm.DB, c *fiber.Ctx) error {
-	var farms []Farm
-	db.Find(&farms)
+	userID, err := c.Locals("userID").(int)
+	if !err {
+		return c.Status(500).JSON(fiber.Map{"error": "User ID not found"})
+	}
+
+	var farms Farm
+	db.Find(&farms, "user_id = ?", userID)
 	return c.JSON(farms)
 }
 
-func GetFarm(db *gorm.DB, c *fiber.Ctx) error {
-	id := c.Params("id")
-	var farm Farm
-	if db.First(&farm, id).Error != nil {
-		return c.Status(404).JSON(fiber.Map{"error": "Farm not found at ID: " + id})
-	}
-	return c.JSON(farm)
-}
+// func GetFarm(db *gorm.DB, c *fiber.Ctx) error {
+// 	id := c.Params("id")
+// 	var farm Farm
+// 	if db.First(&farm, id).Error != nil {
+// 		return c.Status(404).JSON(fiber.Map{"error": "Farm not found at ID: " + id})
+// 	}
+// 	return c.JSON(farm)
+// }
 
 func UpdateFarm(db *gorm.DB, c *fiber.Ctx) error {
 	id := c.Params("id")
