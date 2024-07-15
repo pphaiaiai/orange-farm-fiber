@@ -24,5 +24,19 @@ services:
       - postgres
     restart: unless-stopped
 
+  myapp:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=myuser
+      - DB_PASSWORD=mypassword
+      - DB_NAME=mydatabase
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    
 volumes:
   postgres_data:
