@@ -14,6 +14,16 @@ type Orange struct {
 	FarmID      uint `json:"farm_id"`
 }
 
+// Handler functions
+// GetOranges godoc
+// @Summary Get all Oranges
+// @Description Get details of all oranges
+// @Tags books
+// @Accept  json
+// @Produce  json
+// @Security ApiKeyAuth
+// @Success 200 {array} Orange
+// @Router /orange [get]
 func GetOranges(db *gorm.DB, c *fiber.Ctx) error {
 	var oranges []Orange
 

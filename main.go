@@ -8,6 +8,10 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/swagger"
+	"github.com/pphaiaiai/orange-farm-fiber/adapters"
+	_ "github.com/pphaiaiai/orange-farm-fiber/docs"
+	"github.com/pphaiaiai/orange-farm-fiber/usecases"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -15,6 +19,15 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
+// @title Orange Farm Fiber API
+// @description This is a simple API for managing orange farms
+// @version 1.0
+// @host localhost:8080
+// @BasePath /
+// @schemes http
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	// Connect to the database
 	host := os.Getenv("DB_HOST")
@@ -68,6 +81,15 @@ func main() {
 	VarietyRoute(app, db)
 	FarmRoute(app, db)
 	OrangeRoute(app, db)
+
+	userRepo := adapters.NewGormUserRepository(db)
+	userUsecase := usecases.NewUserService(userRepo)
+	orderHandler := adapters.NewHttpUserHandler(userUsecase)
+
+	app.Post("/create-user", orderHandler.CreateUser)
+
+	// Swagger
+	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	// Start server
 	log.Fatal(app.Listen(":8080"))

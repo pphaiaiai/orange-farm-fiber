@@ -20,6 +20,16 @@ type User struct {
 	Role     Role   `json:"role"`
 }
 
+// Handler functions
+// CreateUser godoc
+// @Summary Create a new user
+// @Description Create a new user with email and password
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Security
+// @Success 200 {array} User
+// @Router /register [post]
 func CreateUser(db *gorm.DB, c *fiber.Ctx) error {
 	user := new(User)
 	if err := c.BodyParser(user); err != nil {
@@ -44,7 +54,17 @@ func CreateUser(db *gorm.DB, c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": "Registration successful"})
 }
 
-// loginUser handles user login
+// Login godoc
+// @Summary Login for authentication
+// @Description Login with email and password to get JWT token
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param user body User true "User credentials" example({"email": "user@example.com", "password": "test"})
+// @Success 200 {object} map[string]string "Login successful"
+// @Failure 401 {object} map[string]string "error"
+// @Failure 500 {object} map[string]string "error"
+// @Router /login [post]
 func Login(db *gorm.DB, c *fiber.Ctx) error {
 	var input User
 	var user User
