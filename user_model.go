@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -18,40 +17,6 @@ type User struct {
 	Email    string `json:"email" gorm:"unique" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
 	Role     Role   `json:"role"`
-}
-
-// Handler functions
-// CreateUser godoc
-// @Summary Create a new user
-// @Description Create a new user with email and password
-// @Tags user
-// @Accept  json
-// @Produce  json
-// @Security
-// @Success 200 {array} User
-// @Router /register [post]
-func CreateUser(db *gorm.DB, c *fiber.Ctx) error {
-	user := new(User)
-	if err := c.BodyParser(user); err != nil {
-		return err
-	}
-
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return c.Status(500).SendString(err.Error())
-	}
-	user.Password = string(hashedPassword)
-	user.Role = "USER"
-
-	result := db.Create(user)
-	if result.Error != nil {
-		if strings.Contains(result.Error.Error(), "uni_users_email") {
-			return c.Status(500).JSON(fiber.Map{"error": "Email already exists"})
-		}
-		return c.Status(500).SendString(result.Error.Error())
-	}
-
-	return c.JSON(fiber.Map{"message": "Registration successful"})
 }
 
 // Login godoc

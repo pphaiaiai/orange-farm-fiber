@@ -86,11 +86,11 @@ func main() {
 	userUsecase := usecases.NewUserService(userRepo)
 	orderHandler := adapters.NewHttpUserHandler(userUsecase)
 
-	app.Post("/create-user", orderHandler.CreateUser)
+	app.Post("/register", orderHandler.CreateUser)
 
 	// Swagger
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	// Start server
-	log.Fatal(app.Listen(":8080"))
+	log.Fatal(app.Listen(":8000"))
 }
